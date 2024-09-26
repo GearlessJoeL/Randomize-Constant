@@ -101,9 +101,9 @@
     }
 
     const generate_points = () => {
-        const angle1 = Math.random() * 2 * Math.PI;
-        const angle2 = Math.random() * 2 * Math.PI;
-        const angle3 = Math.random() * 2 * Math.PI;
+        const angle1 = Math.random() * 2 / 3 * Math.PI;
+        const angle2 = Math.random() * 2 / 3 * Math.PI + Math.PI / 3;
+        const angle3 = Math.random() * 2 / 3 * Math.PI + Math.PI * 2 / 3;
 
         web.angles = [angle1, angle2, angle3];
         web.angles.sort((a, b) => a - b);

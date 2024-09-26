@@ -14,8 +14,8 @@
                 <p>请问东半的平均长度是否等于半个圆周? 可以点击模拟按键来寻找思路。</p>
             </div>
             <div v-if="simulation_stoped">
-                <p>看起来，东半的长度大于半个圆，请思考为什么？</p>
-                <p>可以点击解释按键得到提示。</p>
+                <p>看起来，东半的长度大于半个圆，请问具体平均长度为多少，以及为什么？</p>
+                <p>可以点击模拟按键得到提示。</p>
             </div>
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
@@ -50,7 +50,7 @@
                         <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                         <br>
                         <div id="simulate-button">
-                            <button @click="fast_simulate(100)">模拟100次</button>
+                            <button @click="fast_simulate(simulation_stoped ? 100 : 10)">模拟{{simulation_stoped ? 100 : 10}}次</button>
                         </div>
                         
                     </div>
@@ -316,13 +316,13 @@
                 'rgba(6, 182, 212, 0.2)',
                 // 'rgba(6, 182, 212, 0.2)',
                 // 'rgba(6, 182, 212, 0.2)',
-                'rgba(51, 255, 153, 0.3)',
+                // 'rgba(51, 255, 153, 0.3)',
                 ],
                 borderColor: [
                 'rgb(6, 182, 212)',
                 // 'rgb(6, 182, 212)',
                 // 'rgb(6, 182, 212)',
-                'rgb(82, 211, 216)',
+                // 'rgb(82, 211, 216)',
                 ],
                 borderWidth: 1,
             }],
@@ -447,8 +447,8 @@
             display_angles.push(element);
             display_labels.push(index + 1);
         });
-        display_angles.push(web.ave_propability);
-        display_labels.push('总体比例');
+        // display_angles.push(web.ave_propability);
+        // display_labels.push('总体比例');
         chart_data.value.datasets[0].data = display_angles;
         chart_data.value.labels = display_labels;
         freq_data.value.datasets[0].data = frequency.concat();
