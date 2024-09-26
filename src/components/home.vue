@@ -314,15 +314,15 @@
                 data: [],
                 backgroundColor: [
                 'rgba(6, 182, 212, 0.2)',
-                'rgba(6, 182, 212, 0.2)',
-                'rgba(6, 182, 212, 0.2)',
+                // 'rgba(6, 182, 212, 0.2)',
+                // 'rgba(6, 182, 212, 0.2)',
                 'rgba(51, 255, 153, 0.3)',
                 ],
                 borderColor: [
                 'rgb(6, 182, 212)',
-                'rgb(6, 182, 212)',
-                'rgb(6, 182, 212)',
-                'rgb(0, 255, 153)',
+                // 'rgb(6, 182, 212)',
+                // 'rgb(6, 182, 212)',
+                'rgb(82, 211, 216)',
                 ],
                 borderWidth: 1,
             }],
@@ -431,17 +431,22 @@
     const refresh_chart = () => {
         const display_angles = [];
         const display_labels = [];
-        if (web.count > 3){
-            for (let i = 3; i >= 1; i --){
-                display_angles.push(proportion_array[web.count - i]);
-                display_labels.push(web.count - i + 1);
-            }
-        } else {
-            proportion_array.forEach((element, index) => {
-                display_angles.push(element);
-                display_labels.push(index + 1);
-            });
-        }
+        // if (web.count > 3){
+        //     for (let i = 3; i >= 1; i --){
+        //         display_angles.push(proportion_array[web.count - i]);
+        //         display_labels.push(web.count - i + 1);
+        //     }
+        // } else {
+        //     proportion_array.forEach((element, index) => {
+        //         display_angles.push(element);
+        //         display_labels.push(index + 1);
+        //     });
+        // }
+        
+        proportion_array.forEach((element, index) => {
+            display_angles.push(element);
+            display_labels.push(index + 1);
+        });
         display_angles.push(web.ave_propability);
         display_labels.push('总体比例');
         chart_data.value.datasets[0].data = display_angles;
