@@ -9,11 +9,11 @@
         </div> -->
         <div class="title">
             <h1>真假对称性</h1><br>
-            <div v-if="!simulation_stoped">
+            <div v-if="!simulation_finished">
                 <p>在一个圆周上，最右点叫做东端。取两个随机点将圆周断开成两段弧，包含东端的那段弧姑且叫做东半。</p>
                 <p>请问东半的平均长度是否等于半个圆周? 可以点击模拟按键来寻找思路。</p>
             </div>
-            <div v-if="simulation_stoped">
+            <div v-if="simulation_finished">
                 <p>看起来，东半的长度大于半个圆，请问具体平均长度为多少，以及为什么？</p>
                 <p>可以点击模拟按键得到提示。</p>
             </div>
@@ -40,7 +40,7 @@
                             {{ hoverInfo.text }}
                         </div>
                     </div>
-                    <!-- <div class="empty-space" v-if="!simulation_stoped"></div> -->
+                    <!-- <div class="empty-space" v-if="!simulation_finished"></div> -->
                     
                     <div class="text-info">
                         <!-- <p>东段长度 = {{ web.arc_length.toFixed(2) }}</p> -->
@@ -50,7 +50,7 @@
                         <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                         <br>
                         <div id="simulate-button">
-                            <button @click="fast_simulate(simulation_stoped ? 100 : 10)">模拟{{simulation_stoped ? 100 : 10}}次</button>
+                            <button @click="fast_simulate(simulation_finished ? 100 : 10)">模拟{{simulation_finished ? 100 : 10}}次</button>
                         </div>
                         
                     </div>
@@ -115,7 +115,7 @@
     const chart_options = ref();
     const freq_data = ref();
     const freq_chart_options = ref();
-    const simulation_stoped = ref(false);
+    const simulation_finished = ref(false);
     const isMuted = ref(false);
     const hasInteracted = ref(false);
     const show_chart = ref(false);
@@ -176,8 +176,9 @@
             generate_points();
         }
         await sleep(1000);
-        simulation_stoped.value = true;
-        start_play_second();
+        simulation_finished.value = true;
+        await sleep(1000);
+        if (time === 10) start_play_second();
     }
 
     const generate_points = () => {
