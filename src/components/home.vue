@@ -44,13 +44,13 @@
                     
                     <div class="text-info">
                         <!-- <p>东段长度 = {{ web.arc_length.toFixed(2) }}</p> -->
-                        <p>东半长度 = {{ web.proportion.toFixed(2) }} 个周长</p>
-                        <p>东半平均 = {{ web.ave_propability.toFixed(2) }} 个周长</p>
-                        <p>模拟次数: {{ web.count }}</p>
+                        <!-- <p>东半长度 = {{ web.proportion.toFixed(2) }} %个周长</p> -->
+                        <p v-show="simulation_finished">东半 {{ web.count }} 次平均 = {{ web.ave_propability.toFixed(2) / 100 }}</p>
+                        <!-- <p>模拟次数: {{ web.count }}</p> -->
                         <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                         <br>
                         <div id="simulate-button">
-                            <button @click="fast_simulate(simulation_finished ? 100 : 10)">模拟{{simulation_finished ? 100 : 10}}次</button>
+                            <button @click="fast_simulate(simulation_finished ? 990 : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
                         </div>
                         
                     </div>
@@ -172,7 +172,7 @@
 
     const fast_simulate = async (time) => {
         for (let i = 0; i < time; i ++){
-            await sleep(42);
+            // await sleep(42);
             generate_points();
         }
         await sleep(1000);
@@ -311,7 +311,7 @@
         return {
             labels: [],
             datasets: [{
-                label: ['单次模拟东段比例'],
+                label: [''],
                 data: [],
                 backgroundColor: [
                 'rgba(6, 182, 212, 0.2)',
