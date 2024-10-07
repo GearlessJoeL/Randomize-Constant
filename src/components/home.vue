@@ -13,9 +13,13 @@
                 <p>在一个圆周上，最右点叫做东端。取两个随机点将圆周断开成两段弧，包含东端的那段弧姑且叫做东半。</p>
                 <p>请问东半的平均长度是否等于半个圆周? 可以点击模拟按键来寻找思路。</p>
             </div>
-            <div v-if="simulation_finished">
+            <div v-if="simulation_finished && !simulation_1000_finished">
                 <p>看起来，东半的长度大于半个圆，请问具体平均长度为多少，以及为什么？</p>
-                <p>可以点击模拟按键得到提示。</p>
+                <p>请想出一个解释，然后按答案键作比对。可以点击模拟按钮继续寻找思路。</p>
+                <!-- <p>可以点击模拟按键得到提示。</p> -->
+            </div>
+            <div v-if="simulation_1000_finished">
+                <p>看起来，东半的长度很接近2/3个圆，请想出一个解释，然后点击解释键作比对。</p>
             </div>
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
@@ -25,7 +29,7 @@
                 <button @click="go_explain()">解释</button>
             </div>
             <div class="detail-area">
-                <div class="chart-container">
+                <div class="chart-container" v-if="show_chart">
                     <Chart type="bar" :data="chart_data" :options="chart_options" />
                     <!-- <Chart type="bar" :data="freq_data" :options="freq_chart_options" /> -->
                     
@@ -45,12 +49,12 @@
                     <div class="text-info">
                         <!-- <p>东段长度 = {{ web.arc_length.toFixed(2) }}</p> -->
                         <!-- <p>东半长度 = {{ web.proportion.toFixed(2) }} %个周长</p> -->
-                        <p v-show="simulation_finished">东半 {{ web.count }} 次平均 = {{ web.ave_propability.toFixed(2) / 100 }}</p>
+                        <p v-show="simulation_finished">东半 {{ web.count }} 次平均 = {{ (web.ave_propability / 100.0).toFixed(4) }}</p>
                         <!-- <p>模拟次数: {{ web.count }}</p> -->
                         <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                         <br>
                         <div id="simulate-button">
-                            <button @click="fast_simulate(simulation_finished ? 990 : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
+                            <button @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 990) : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
                         </div>
                         
                     </div>
@@ -116,9 +120,10 @@
     const freq_data = ref();
     const freq_chart_options = ref();
     const simulation_finished = ref(false);
+    const simulation_1000_finished = ref(false);
     const isMuted = ref(false);
     const hasInteracted = ref(false);
-    const show_chart = ref(false);
+    const show_chart = ref(true);
     const audio1_finished = ref(false);
     const audio1 = new Audio('home_title.mp3');
     const audio2 = new Audio('question_title.mp3');
@@ -171,14 +176,16 @@
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
     const fast_simulate = async (time) => {
+        if (time !== 10) show_chart.value = false;
         for (let i = 0; i < time; i ++){
             // await sleep(42);
             generate_points();
         }
-        await sleep(1000);
+        //await sleep(1000);
         simulation_finished.value = true;
-        await sleep(1000);
+        //await sleep(1000);
         if (time === 10) start_play_second();
+        else simulation_1000_finished.value = true;
     }
 
     const generate_points = () => {
@@ -199,7 +206,7 @@
         web.count ++;
         calculate_length();
         draw_points();
-        refresh_chart();
+        if (show_chart.value) refresh_chart();
     }
 
     const calculate_length = () => {

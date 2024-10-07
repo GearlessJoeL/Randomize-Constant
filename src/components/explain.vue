@@ -79,6 +79,7 @@
     const large_size = 10;
     const is_hovered = Array(3).fill(false);
     const dpr = window.devicePixelRatio || 1;
+    const colors = ['rgba(255, 0, 0, 0.5)', 'rgba(0, 255, 0, 0.5)', 'rgba(0, 0, 255, 0.5)'];
     let animationFrameId = null;
 
     onMounted(() => {
@@ -161,6 +162,18 @@
             ctx.fill();
             ctx.stroke();
         }
+    }
+
+    const draw_arcs = () => {
+        for (let i = 0; i < 3; i ++){
+            const ctx = points_canvas.value.getContext('2d');
+            ctx.beginPath();
+            ctx.arc(diviation_x, diviation_y, web.angles[i], web.angles[i + 1 >= 3 ? 0 : i + 1]);
+            ctx.strokeStyle = colors[i];
+            ctx.stroke();
+        }
+        
+
     }
 
     // const draw_east_point = () => {
