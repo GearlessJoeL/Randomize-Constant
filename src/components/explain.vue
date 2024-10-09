@@ -79,7 +79,7 @@
     const large_size = 10;
     const is_hovered = Array(3).fill(false);
     const dpr = window.devicePixelRatio || 1;
-    const colors = ['rgba(255, 0, 0, 0.5)', 'rgba(0, 255, 0, 0.5)', 'rgba(0, 0, 255, 0.5)'];
+    const colors = ['red', 'green', 'blue'];
     let animationFrameId = null;
 
     onMounted(() => {
@@ -89,7 +89,7 @@
         points_canvas.value.height = height * dpr;
         background_canvas.value.width = width * dpr;
         background_canvas.value.height = height * dpr;
-        draw_circle();
+        //draw_circle();
         generate_points();
         if (sessionStorage.getItem('explainAudioPlayed') === 'true') {
             hasInteracted.value = true;
@@ -102,9 +102,9 @@
     }
 
     const generate_points = () => {
-        const angle1 = Math.random() * 2 / 3 * Math.PI;
-        const angle2 = Math.random() * 2 / 3 * Math.PI + Math.PI / 3;
-        const angle3 = Math.random() * 2 / 3 * Math.PI + Math.PI * 2 / 3;
+        const angle1 = Math.random() * 2 / 5 * Math.PI;
+        const angle2 = (Math.random() + 1) * 2 / 5 * Math.PI + Math.PI / 3;
+        const angle3 = (Math.random() + 2) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
 
         web.angles = [angle1, angle2, angle3];
         web.angles.sort((a, b) => a - b);
@@ -123,6 +123,7 @@
         //web.count ++;
         calculate_length();
         draw_points();
+        draw_arcs();
     }
 
     const calculate_length = () => {
@@ -165,14 +166,14 @@
     }
 
     const draw_arcs = () => {
+        const ctx = background_canvas.value.getContext('2d');
         for (let i = 0; i < 3; i ++){
-            const ctx = points_canvas.value.getContext('2d');
             ctx.beginPath();
-            ctx.arc(diviation_x, diviation_y, web.angles[i], web.angles[i + 1 >= 3 ? 0 : i + 1]);
+            ctx.arc(diviation_x * dpr, diviation_y * dpr, display_radius * dpr, -web.angles[i === 2 ? 0 : i + 1], -web.angles[i]);
             ctx.strokeStyle = colors[i];
+            // console.log(i, colors[i]);
             ctx.stroke();
         }
-        
 
     }
 
@@ -215,6 +216,7 @@
                 actual_y[i] = -web.points[i][1] * display_radius + diviation_y;
             }
         }
+        draw_arcs();
         draw_points();
         animationFrameId = requestAnimationFrame(animate);
         if (is_cancel) cancelAnimationFrame(animationFrameId);
@@ -253,6 +255,7 @@
             hoverInfo.value.visible = false;
         }
         
+        // draw_arcs();
         draw_points();
     }
 
