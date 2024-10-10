@@ -75,8 +75,8 @@
     const actual_x = [];
     const actual_y = [];
     const velocity = 0.01;
-    const normal_size = 6;
-    const large_size = 10;
+    const normal_size = 12;
+    const large_size = 16;
     const is_hovered = Array(3).fill(false);
     const dpr = window.devicePixelRatio || 1;
     const colors = ['red', 'green', 'blue'];
@@ -157,11 +157,16 @@
         for (let i = 0; i < 3; i ++){
             const r = is_hovered[i] ? large_size : normal_size;
             ctx.beginPath();
+            ctx.fillStyle = '#FFFFFF';
             ctx.arc(actual_x[i] * dpr, actual_y[i] * dpr, r * dpr, 0, 2 * Math.PI);
-            ctx.fillStyle = 'white';
-            if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#00FF99';
+            if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#B3EFFF';
+            else ctx.fillStyle = '#FFFFFF';
             ctx.fill();
             ctx.stroke();
+            if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#1C304A';
+            else ctx.fillStyle = '#046B99';
+            ctx.font = '20px Consolas';
+            ctx.fillText(i === 0 ? 'A' : (i === 1 ? 'B' : 'C'), (actual_x[i] - 4.5) * dpr, (actual_y[i] + 4.5) * dpr);
         }
     }
 
