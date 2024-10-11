@@ -17,9 +17,9 @@
             <div class="explain-canvas-container">
                 <canvas ref="background_canvas" id="background-canvas"></canvas>
                 <canvas ref="points_canvas" id="points-canvas" @mousemove="handle_mouse_move"></canvas>
-                <div v-if="hoverInfo.visible" :style="hoverInfo.style" class="info-box">
+                <!-- <div v-if="hoverInfo.visible" :style="hoverInfo.style" class="info-box">
                     {{ hoverInfo.text }}
-                </div>
+                </div> -->
             </div>
             <div class="explain-text-info">
                 <!-- <p>Point A: {{ web.points[0] }} </p>
@@ -79,7 +79,7 @@
     const large_size = 16;
     const is_hovered = Array(3).fill(false);
     const dpr = window.devicePixelRatio || 1;
-    const colors = ['red', 'green', 'blue'];
+    const colors = ['rgb(168,62,76)', 'rgb(134,169,111)', 'rgb(131,151,208)'];
     let animationFrameId = null;
 
     onMounted(() => {
@@ -157,12 +157,13 @@
         for (let i = 0; i < 3; i ++){
             const r = is_hovered[i] ? large_size : normal_size;
             ctx.beginPath();
-            ctx.fillStyle = '#FFFFFF';
             ctx.arc(actual_x[i] * dpr, actual_y[i] * dpr, r * dpr, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#00CFFF';
+            ctx.lineWidth = 4;
+            ctx.stroke();
             if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#B3EFFF';
             else ctx.fillStyle = '#FFFFFF';
             ctx.fill();
-            ctx.stroke();
             if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#1C304A';
             else ctx.fillStyle = '#046B99';
             ctx.font = '20px Consolas';
@@ -176,6 +177,7 @@
             ctx.beginPath();
             ctx.arc(diviation_x * dpr, diviation_y * dpr, display_radius * dpr, -web.angles[i === 2 ? 0 : i + 1], -web.angles[i]);
             ctx.strokeStyle = colors[i];
+            ctx.lineWidth = 3;
             // console.log(i, colors[i]);
             ctx.stroke();
         }
