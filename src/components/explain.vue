@@ -4,8 +4,8 @@
     <div class="view-area">
         <div class="title">
             <h1>固定量的随机化</h1><br>
-            <p>在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和CA弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</p>
-            <p>将 A, B, C 一齐旋转, 直至 A 点到达东端，在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 CA 弧。所以答案是 2/3.</p>
+            <p v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和CA弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</p>
+            <p v-if="explain1_finished">将 A, B, C 一齐旋转, 直至 A 点到达东端，在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 CA 弧。所以答案是 2/3.</p>
             <!-- 一行话读完之后，再显示另一行 把点改成短线 要筛选掉太接近的点-->
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
@@ -67,7 +67,9 @@
     });
     const isMuted = ref(false);
     const hasInteracted = ref(false);
-    const audio = new Audio('explain.wav');
+    const explain1_finished = ref(false);
+    const audio1 = new Audio('explain1.wav');
+    const audio2 = new Audio('explain2.wav');
 
     const diviation_x = 400;
     const diviation_y = 400;
@@ -268,17 +270,26 @@
 
     const toggleMute = () => {
         isMuted.value = !isMuted.value;
-        audio.muted = isMuted.value;
+        audio1.muted = isMuted.value;
+        audio2.muted = isMuted.value;
     };
 
     const startPlayback = () => {
         if (!hasInteracted.value) {
-            audio.play().then(() => {
+            audio1.play().then(() => {
                 hasInteracted.value = true;
                 sessionStorage.setItem('explainAudioPlayed', 'true');
-                console.log('played');
+                console.log('audio1 played');
+                explain1_finished.value = true;
+                
+            }).then(() => {
+                audio2.play().then(() => {
+                    console.log("audio2 played");
+                }).catch(error => {
+                    console.error("Playback2 failed: ", error);
+                });
             }).catch(error => {
-                console.error("Playback failed:", error);
+                console.error("Playback1 failed:", error);
             });
         } else {
             console.log("not played");
