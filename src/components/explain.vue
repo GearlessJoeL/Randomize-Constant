@@ -2,6 +2,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div class="view-area">
+        <audio autoplay @ended="audio1_ended" ref="audio1"></audio>
+        <!-- <audio @play="explain1_finished" ref="audio2"></audio> -->
         <div class="title">
             <h1>固定量的随机化</h1><br>
             <p v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和CA弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</p>
@@ -68,6 +70,7 @@
     const isMuted = ref(false);
     const hasInteracted = ref(false);
     const explain1_finished = ref(false);
+    const explain2_finished = ref(false);
     const audio1 = new Audio('explain1.wav');
     const audio2 = new Audio('explain2.wav');
 
@@ -274,27 +277,32 @@
         audio2.muted = isMuted.value;
     };
 
-    const startPlayback = () => {
-        if (!hasInteracted.value) {
-            audio1.play().then(() => {
-                hasInteracted.value = true;
-                sessionStorage.setItem('explainAudioPlayed', 'true');
-                console.log('audio1 played');
-                explain1_finished.value = true;
-                
-            }).then(() => {
-                audio2.play().then(() => {
-                    console.log("audio2 played");
-                }).catch(error => {
-                    console.error("Playback2 failed: ", error);
-                });
-            }).catch(error => {
-                console.error("Playback1 failed:", error);
-            });
-        } else {
-            console.log("not played");
-        }
-    };
+    // const startPlayback = () => {
+    //     if (!hasInteracted.value) {
+    //         audio1.play().then(() => {
+    //             hasInteracted.value = true;
+    //             sessionStorage.setItem('explainAudioPlayed', 'true');
+    //             console.log('audio1 played');
+    //         }).catch(error => {
+    //             console.error("Playback1 failed:", error);
+    //         });
+    //         explain1_finished.value = true;
+    //         // .then(() => {
+    //         audio2.play().then(() => {
+    //             console.log("audio2 played");
+    //         }).catch(error => {
+    //             console.error("Playback2 failed: ", error);
+    //         });
+    //         // })
+    //     } else {
+    //         console.log("not played");
+    //     }
+    // };
+    const audio1_ended = () => {
+        explain1_finished.value = true;
+        console.log("audio1 ended");
+        audio2.play();
+    }
 </script>
 
 <style scoped>
