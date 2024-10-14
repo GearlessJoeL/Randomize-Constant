@@ -2,11 +2,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div class="view-area">
-        <audio autoplay @ended="audio1_ended" ref="audio1"></audio>
+        <audio autoplay @ended="audio1_ended" ref="audio1" src="../../public/explain1.wav"></audio>
         <!-- <audio @play="explain1_finished" ref="audio2"></audio> -->
         <div class="title">
             <h1>固定量的随机化</h1><br>
-            <p v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和CA弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</p>
+            <p v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</p>
             <p v-if="explain1_finished">将 A, B, C 一齐旋转, 直至 A 点到达东端，在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 CA 弧。所以答案是 2/3.</p>
             <!-- 一行话读完之后，再显示另一行 把点改成短线 要筛选掉太接近的点-->
         </div>
@@ -71,7 +71,7 @@
     const hasInteracted = ref(false);
     const explain1_finished = ref(false);
     const explain2_finished = ref(false);
-    const audio1 = new Audio('explain1.wav');
+    const audio1 = ref(null);
     const audio2 = new Audio('explain2.wav');
 
     const diviation_x = 400;
@@ -172,7 +172,7 @@
             if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#1C304A';
             else ctx.fillStyle = '#046B99';
             ctx.font = '20px Consolas';
-            ctx.fillText(i === 0 ? 'A' : (i === 1 ? 'B' : 'C'), (actual_x[i] - 4.5) * dpr, (actual_y[i] + 4.5) * dpr);
+            ctx.fillText(i === 0 ? 'A' : (i === 1 ? 'B' : 'C'), (actual_x[i] - 4.5) * dpr, (actual_y[i] + 4.8) * dpr);
         }
     }
 
@@ -277,27 +277,28 @@
         audio2.muted = isMuted.value;
     };
 
-    // const startPlayback = () => {
-    //     if (!hasInteracted.value) {
-    //         audio1.play().then(() => {
-    //             hasInteracted.value = true;
-    //             sessionStorage.setItem('explainAudioPlayed', 'true');
-    //             console.log('audio1 played');
-    //         }).catch(error => {
-    //             console.error("Playback1 failed:", error);
-    //         });
-    //         explain1_finished.value = true;
-    //         // .then(() => {
-    //         audio2.play().then(() => {
-    //             console.log("audio2 played");
-    //         }).catch(error => {
-    //             console.error("Playback2 failed: ", error);
-    //         });
-    //         // })
-    //     } else {
-    //         console.log("not played");
-    //     }
-    // };
+    const startPlayback = () => {
+        if (!hasInteracted.value) {
+            audio1.play().then(() => {
+                hasInteracted.value = true;
+                sessionStorage.setItem('explainAudioPlayed', 'true');
+                console.log('audio1 played');
+            }).catch(error => {
+                console.error("Playback1 failed:", error);
+            });
+            // explain1_finished.value = true;
+            // // .then(() => {
+            // audio2.play().then(() => {
+            //     console.log("audio2 played");
+            // }).catch(error => {
+            //     console.error("Playback2 failed: ", error);
+            // });
+            // // })
+        } else {
+            console.log("not played");
+        }
+    };
+
     const audio1_ended = () => {
         explain1_finished.value = true;
         console.log("audio1 ended");
