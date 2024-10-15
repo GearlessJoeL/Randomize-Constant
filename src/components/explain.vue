@@ -2,7 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div class="view-area">
-        <audio autoplay @ended="audio1_ended" ref="audio1" src="../../public/explain1.wav"></audio>
+        <audio autoplay @ended="audio1_ended" ref="audio1" src="/explain1.wav"></audio>
         <!-- <audio @play="explain1_finished" ref="audio2"></audio> -->
         <div class="title">
             <h1>固定量的随机化</h1><br>
@@ -29,8 +29,8 @@
                 <p>Point C: {{ web.points[2] }} </p> -->
                 <!-- <p>东半弧长: {{ web.arc_length.toFixed(2) }}</p> -->
                 <!-- <p>东半长度: {{ web.proportion.toFixed(2) }}%</p><br> -->
-                <button @click="generate_points()">模拟</button>
-                <button @click="animate()">解释统计</button>
+                <button @click="simulate">模拟</button>
+                <!-- <button @click="animate()">解释统计</button> -->
                 <br>
             </div>
             
@@ -79,7 +79,6 @@
     const display_radius = 200;
     const actual_x = [];
     const actual_y = [];
-    const velocity = 0.01;
     const normal_size = 12;
     const large_size = 16;
     const is_hovered = Array(3).fill(false);
@@ -105,6 +104,8 @@
     const go_home = () => {
         router.push('/home');
     }
+    
+    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
     const generate_points = () => {
         const angle1 = Math.random() * 2 / 5 * Math.PI;
@@ -129,6 +130,12 @@
         calculate_length();
         draw_points();
         draw_arcs();
+    }
+
+    const simulate = () => {
+        generate_points();
+        sleep(1000);
+        animate(0.05);
     }
 
     const calculate_length = () => {
@@ -205,7 +212,7 @@
     //     ctx.stroke();
     // }
 
-    const animate = () => {
+    const animate = (velocity) => {
         const ctx = points_canvas.value.getContext('2d');
         ctx.clearRect(0, 0, 800, 800);
         let is_cancel = false;
@@ -303,6 +310,7 @@
         explain1_finished.value = true;
         console.log("audio1 ended");
         audio2.play();
+        animate(0.01);
     }
 </script>
 

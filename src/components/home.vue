@@ -173,7 +173,7 @@
         router.push('/explain');
     }
 
-    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
     const fast_simulate = async (time) => {
         if (time !== 10) show_chart.value = false;
