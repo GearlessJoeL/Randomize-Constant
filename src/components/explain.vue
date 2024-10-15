@@ -6,8 +6,8 @@
         <!-- <audio @play="explain1_finished" ref="audio2"></audio> -->
         <div class="title">
             <h1>固定量的随机化</h1><br>
-            <p v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</p>
-            <p v-if="explain1_finished">将 A, B, C 一齐旋转, 直至 A 点到达东端，在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 CA 弧。所以答案是 2/3.</p>
+            <div v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</div>
+            <div v-else>将 A, B, C 一齐旋转, 直至 A 点到达东端，在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 AC 弧。所以答案是 2/3.</div>
             <!-- 一行话读完之后，再显示另一行 把点改成短线 要筛选掉太接近的点-->
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
@@ -79,6 +79,7 @@
     const display_radius = 200;
     const actual_x = [];
     const actual_y = [];
+    const velocity = 0.001;
     const normal_size = 12;
     const large_size = 16;
     const is_hovered = Array(3).fill(false);
@@ -98,14 +99,17 @@
         if (sessionStorage.getItem('explainAudioPlayed') === 'true') {
             hasInteracted.value = true;
         }
-        startPlayback();
+        // startPlayback();
     });
 
     const go_home = () => {
         router.push('/home');
     }
     
-    const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+    const sleep = (delay) => new Promise((resolve) => {
+        setTimeout(resolve, delay);
+        console.log("sleep: ", delay);
+    });
 
     const generate_points = () => {
         const angle1 = Math.random() * 2 / 5 * Math.PI;
@@ -132,10 +136,10 @@
         draw_arcs();
     }
 
-    const simulate = () => {
+    const simulate = async() => {
         generate_points();
-        sleep(1000);
-        animate(0.05);
+        await sleep(1000);
+        animate();
     }
 
     const calculate_length = () => {
@@ -212,7 +216,7 @@
     //     ctx.stroke();
     // }
 
-    const animate = (velocity) => {
+    const animate = () => {
         const ctx = points_canvas.value.getContext('2d');
         ctx.clearRect(0, 0, 800, 800);
         let is_cancel = false;
@@ -308,9 +312,9 @@
 
     const audio1_ended = () => {
         explain1_finished.value = true;
-        console.log("audio1 ended");
+        console.log("audio1 ended", explain1_finished.value);
         audio2.play();
-        animate(0.01);
+        animate();
     }
 </script>
 
