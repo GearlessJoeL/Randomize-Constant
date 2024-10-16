@@ -14,9 +14,8 @@
                 <p>请问东半的平均长度是否等于半个圆周? 可以点击模拟按键来寻找思路。</p>
             </div>
             <div v-if="simulation_finished && !simulation_1000_finished">
-                <p>看起来，东半的长度大于半个圆，请问具体平均长度为多少，以及为什么？</p>
-                <p>请想出一个解释，然后按答案键作比对。可以点击模拟按钮继续寻找思路。</p>
-                <!-- <p>可以点击模拟按键得到提示。</p> -->
+                <p>看起来，东半的长度大于半个圆，请想出一个解释，然后按解释键作比对。</p>
+                <!-- 更长的一半更有可能包含东端 -->
             </div>
             <div v-if="simulation_1000_finished">
                 <p>看起来，东半的长度很接近2/3个圆，请想出一个解释，然后点击解释键作比对。</p>
@@ -26,7 +25,7 @@
         
         <div class="content-area">
             <div id="explain-button">
-                <button @click="go_explain()">解释</button>
+                <button v-if="simulation_1000_finished" @click="go_explain()">解释</button>
             </div>
             <div class="detail-area">
                 <div class="chart-container" v-if="show_chart">

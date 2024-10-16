@@ -9,6 +9,7 @@
             <div v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</div>
             <div v-else>将 A, B, C 一齐旋转, 直至 A 点到达东端，在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 AC 弧。所以答案是 2/3.</div>
             <!-- 一行话读完之后，再显示另一行 把点改成短线 要筛选掉太接近的点-->
+            <!--手机适配？-->
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
         <div class="explain-content-area">
@@ -103,7 +104,7 @@
     });
 
     const go_home = () => {
-        router.push('/home');
+        router.push('/');
     }
     
     const sleep = (delay) => new Promise((resolve) => {
@@ -112,8 +113,8 @@
     });
 
     const generate_points = () => {
-        const angle1 = Math.random() * 2 / 5 * Math.PI;
-        const angle2 = (Math.random() + 1) * 2 / 5 * Math.PI + Math.PI / 3;
+        const angle1 = Math.random() / 3 * Math.PI + Math.PI / 2;
+        const angle2 = (Math.random() + 1) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
         const angle3 = (Math.random() + 2) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
 
         web.angles = [angle1, angle2, angle3];
@@ -138,7 +139,7 @@
 
     const simulate = async() => {
         generate_points();
-        await sleep(1000);
+        await sleep(3000);
         animate();
     }
 
