@@ -55,7 +55,7 @@
                         <div id="simulate-button">
                             <button @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 990) : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
                         </div>
-                        
+                        <!-- 朗读完再出现按钮 -->
                     </div>
                 </div>
                 
