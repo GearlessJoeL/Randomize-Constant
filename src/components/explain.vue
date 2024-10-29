@@ -85,7 +85,7 @@
     const large_size = 16;
     const is_hovered = Array(3).fill(false);
     const dpr = window.devicePixelRatio || 1;
-    const colors = ['rgb(168,62,76)', 'rgb(134,169,111)', 'rgb(131,151,208)'];
+    const colors = ['rgb(255, 34, 34)', 'rgb(34, 255, 34)', 'rgb(34, 34, 255)'];
     let animationFrameId = null;
 
     onMounted(() => {
@@ -178,13 +178,13 @@
             ctx.strokeStyle = '#00CFFF';
             ctx.lineWidth = 4;
             ctx.stroke();
-            if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#B3EFFF';
+            if (i === 1 && web.angles[1] === 0) ctx.fillStyle = '#B3EFFF';
             else ctx.fillStyle = '#FFFFFF';
             ctx.fill();
-            if (i === 0 && web.angles[0] === 0) ctx.fillStyle = '#1C304A';
+            if (i === 1 && web.angles[1] === 0) ctx.fillStyle = '#1C304A';
             else ctx.fillStyle = '#046B99';
             ctx.font = '20px Consolas';
-            ctx.fillText(i === 0 ? 'A' : (i === 1 ? 'B' : 'C'), (actual_x[i] - 4.5) * dpr, (actual_y[i] + 4.8) * dpr);
+            ctx.fillText(i === 1 ? 'A' : (i === 2 ? 'B' : 'C'), (actual_x[i] - 4.5) * dpr, (actual_y[i] + 4.8) * dpr);
         }
     }
 
@@ -221,16 +221,16 @@
         const ctx = points_canvas.value.getContext('2d');
         ctx.clearRect(0, 0, 800, 800);
         let is_cancel = false;
-        if (web.angles[0] <= 0.01){
+        if (web.angles[1] <= 0.01){
             for (let i = 1; i < 3; i ++){
-                web.angles[i] -= web.angles[0];
+                web.angles[i] -= web.angles[1];
                 web.points[i] = [Math.cos(web.angles[i]), Math.sin(web.angles[i])];
                 actual_x[i] = web.points[i][0] * display_radius + diviation_x;
                 actual_y[i] = -web.points[i][1] * display_radius + diviation_y;
             }
-            web.angles[0] = 0;
-            actual_x[0] = display_radius + diviation_x;
-            actual_y[0] = diviation_y;
+            web.angles[1] = 0;
+            actual_x[1] = display_radius + diviation_x;
+            actual_y[1] = diviation_y;
             is_cancel = true;
         } else {
             for (let i = 0; i < 3; i ++){
