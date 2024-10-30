@@ -100,6 +100,7 @@
         if (sessionStorage.getItem('explainAudioPlayed') === 'true') {
             hasInteracted.value = true;
         }
+        highlight_points();
         // startPlayback();
     });
 
