@@ -80,7 +80,7 @@
     const display_radius = 200;
     const actual_x = [];
     const actual_y = [];
-    const velocity = 0.001;
+    const velocity = 0.0012;
     const normal_size = 12;
     const large_size = 16;
     const is_hovered = Array(3).fill(false);
@@ -113,9 +113,12 @@
     });
 
     const generate_points = () => {
-        const angle1 = Math.random() / 3 * Math.PI + Math.PI / 2;
-        const angle2 = (Math.random() + 1) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
-        const angle3 = (Math.random() + 2) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
+        // const angle1 = Math.random() / 3 * Math.PI + Math.PI / 2;
+        // const angle2 = (Math.random() + 1) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
+        // const angle3 = (Math.random() + 2) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
+        const angle1 = Math.PI / 4;
+        const angle2 = Math.PI * 11 / 12;
+        const angle3 = Math.PI * 19 / 12;
 
         web.angles = [angle1, angle2, angle3];
         web.angles.sort((a, b) => a - b);
@@ -201,6 +204,18 @@
 
     }
 
+    const draw_outlines = () => {
+        const ctx = background_canvas.value.getContext('2d');
+        for (let i = 0; i < 2; i ++){
+            ctx.beginPath();
+            ctx.arc(diviation_x * dpr, diviation_y * dpr, (display_radius + 3.5)* dpr, -web.angles[i === 2 ? 0 : i + 1], -web.angles[i]);
+            ctx.strokeStyle = '#f39c12';
+            ctx.lineWidth = 5;
+            // console.log(i, colors[i]);
+            ctx.stroke();
+        }
+    }
+
     // const draw_east_point = () => {
     //     actual_x[2] = display_radius + diviation_x;
     //     actual_y[2] = diviation_y;
@@ -231,6 +246,7 @@
             web.angles[1] = 0;
             actual_x[1] = display_radius + diviation_x;
             actual_y[1] = diviation_y;
+            draw_outlines();
             is_cancel = true;
         } else {
             for (let i = 0; i < 3; i ++){
@@ -316,6 +332,10 @@
         console.log("audio1 ended", explain1_finished.value);
         audio2.play();
         animate();
+    }
+
+    const highlight_points = () => {
+        // TODO:
     }
 </script>
 
