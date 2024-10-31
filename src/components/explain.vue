@@ -97,10 +97,11 @@
         background_canvas.value.height = height * dpr;
         //draw_circle();
         generate_points();
+        highlight_points();
+        highlight_arcs();
         if (sessionStorage.getItem('explainAudioPlayed') === 'true') {
             hasInteracted.value = true;
         }
-        highlight_points();
         // startPlayback();
     });
 
@@ -171,7 +172,7 @@
         ctx.stroke();
     }
 
-    const draw_points = () => {
+    const draw_points = (color = '#FFFFFF') => {
         const ctx = points_canvas.value.getContext('2d');
         ctx.clearRect(0, 0, 800, 800);
         //draw_east_point();
@@ -183,6 +184,7 @@
             ctx.lineWidth = 4;
             ctx.stroke();
             if (i === 1 && web.angles[1] === 0) ctx.fillStyle = '#B3EFFF';
+            else if (is_hovered[i]) ctx.fillStyle = color;
             else ctx.fillStyle = '#FFFFFF';
             ctx.fill();
             if (i === 1 && web.angles[1] === 0) ctx.fillStyle = '#1C304A';
@@ -192,13 +194,14 @@
         }
     }
 
-    const draw_arcs = () => {
+    const draw_arcs = (arc_num = -1) => {
         const ctx = background_canvas.value.getContext('2d');
+        ctx.clearRect(0, 0, 800, 800);
         for (let i = 0; i < 3; i ++){
             ctx.beginPath();
             ctx.arc(diviation_x * dpr, diviation_y * dpr, display_radius * dpr, -web.angles[i === 2 ? 0 : i + 1], -web.angles[i]);
             ctx.strokeStyle = colors[i];
-            ctx.lineWidth = 3;
+            ctx.lineWidth = i === arc_num ? 6 : 3;
             // console.log(i, colors[i]);
             ctx.stroke();
         }
@@ -335,8 +338,33 @@
         animate();
     }
 
-    const highlight_points = () => {
+    const highlight_points = async () => {
         // TODO:
+        await sleep(2000);
+        is_hovered[1] = true;
+        draw_points('#D6DBDF');
+        await sleep(500);
+        is_hovered[1] = false;
+        is_hovered[2] = true;
+        draw_points('#D6DBDF');
+        await sleep(500);
+        is_hovered[2] = false;
+        is_hovered[0] = true;
+        draw_points('#D6DBDF');
+        await sleep(500);
+        is_hovered[0] = false;
+        draw_points();
+    }
+
+    const highlight_arcs = async () => {
+        await sleep(7000);
+        draw_arcs(1);
+        await sleep(1000);
+        draw_arcs(2);
+        await sleep(1000);
+        draw_arcs(0);
+        await sleep(1000);
+        draw_arcs();
     }
 </script>
 
