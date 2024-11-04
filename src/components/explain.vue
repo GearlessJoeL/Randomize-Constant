@@ -190,7 +190,11 @@
             if (i === 1 && web.angles[1] === 0) ctx.fillStyle = '#1C304A';
             else ctx.fillStyle = '#046B99';
             ctx.font = '20px Consolas';
-            ctx.fillText(i === 1 ? 'A' : (i === 2 ? 'B' : 'C'), (actual_x[i] - 4.5) * dpr, (actual_y[i] + 4.8) * dpr);
+            ctx.textAlign = 'center'; // 水平居中对齐
+            ctx.textBaseline = 'top';
+            // const textMetrics = ctx.measureText(text);
+            // const textHeight = parseInt(ctx.font, 10);
+            ctx.fillText(i === 1 ? 'A' : (i === 2 ? 'B' : 'C'), actual_x[i] * dpr, actual_y[i] - 9);
         }
     }
 

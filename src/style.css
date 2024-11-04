@@ -46,7 +46,7 @@ h1 {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  border-color:#00CC99;
+  border-color:#005a70;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -57,7 +57,7 @@ button {
 }
 
 button:hover {
-  border-color:#009999;
+  /* border-color:#006e99; */
   background-color:rgb(205, 255, 255);
   transition: 200ms;
 }

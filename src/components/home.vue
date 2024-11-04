@@ -362,9 +362,7 @@
         return {
             plugins: {
             legend: {
-                labels: {
-                    color: textColor,
-                },
+                display: false 
             },
             },
             scales: {
@@ -406,9 +404,7 @@
         return {
             plugins: {
             legend: {
-                labels: {
-                    color: textColor,
-                },
+                display: false 
             },
             },
             scales: {
