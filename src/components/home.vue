@@ -28,9 +28,9 @@
                 <button v-if="simulation_1000_finished" @click="go_explain()">解释</button>
             </div>
             <div class="detail-area">
-                <div class="chart-container" v-if="show_chart">
-                    <Chart type="bar" :data="chart_data" :options="chart_options" />
-                    <!-- <Chart type="bar" :data="freq_data" :options="freq_chart_options" /> -->
+                <div class="chart-container">
+                    <Chart v-if="!simulation_1000_finished" type="bar" :data="chart_data" :options="chart_options" />
+                    <Chart v-if="simulation_1000_finished" type="line" :data="line_data" :options="line_chart_options" />
                     
                     <!-- <p>Point A: {{ web.points[0] }} </p>
                     <p>Point B: {{ web.points[1] }} </p> -->
@@ -116,8 +116,8 @@
     // const display_labels = ref([]);
     const chart_data = ref();
     const chart_options = ref();
-    const freq_data = ref();
-    const freq_chart_options = ref();
+    const line_data = ref();
+    const line_chart_options = ref();
     const simulation_finished = ref(false);
     const simulation_1000_finished = ref(false);
     const isMuted = ref(false);
@@ -136,9 +136,9 @@
     const large_size = 10;
     const is_hovered = Array(3).fill(false);
     const proportion_array = [];
-    const frequency = Array(100).fill(0);
+    // const frequency = Array(100).fill(0);
     const dpr = window.devicePixelRatio || 1;
-    let highest_freq = 0;
+    // let highest_freq = 0;
 
     onMounted(() => {
         const width = 800;
@@ -147,12 +147,12 @@
         points_canvas.value.height = height * dpr;
         background_canvas.value.width = width * dpr;
         background_canvas.value.height = height * dpr;
-        draw_circle();
-        draw_east_point();
+        // draw_circle();
+        // draw_east_point();
         chart_data.value = setBarChartData();
         chart_options.value = setChartOptions();
-        freq_data.value = setFreqData();
-        freq_chart_options.value = setFreqOptions();
+        line_data.value = setLineData();
+        line_chart_options.value = setLineOptions();
         //audio1.addEventListener('ended', onAudioEnded);
         console.log(sessionStorage.getItem('homeAudioPlayed'));
         if (sessionStorage.getItem('homeAudioPlayed') === 'true') {
@@ -175,10 +175,11 @@
     const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
     const fast_simulate = async (time) => {
-        if (time !== 10) show_chart.value = false;
+        // if (time !== 10) show_chart.value = false;
         for (let i = 0; i < time; i ++){
             // await sleep(42);
             generate_points();
+            // console.log("fast sim", i);
         }
         //await sleep(1000);
         simulation_finished.value = true;
@@ -204,22 +205,23 @@
         
         web.count ++;
         calculate_length();
-        draw_points();
-        if (show_chart.value) refresh_chart();
+        // draw_points();
+        refresh_chart();
     }
 
     const calculate_length = () => {
         const angle = Math.PI * 2 - (web.angles[1] - web.angles[0]);
         web.arc_length = angle;
         web.proportion = angle / Math.PI / 2 * 100;
-        frequency[Math.floor(web.proportion)] ++;
-        highest_freq = Math.max(highest_freq, frequency[Math.floor(web.proportion)]);
+        // frequency[Math.floor(web.proportion)] ++;
+        // highest_freq = Math.max(highest_freq, frequency[Math.floor(web.proportion)]);
         statistic(web.proportion);
     }
 
     const statistic = (p) => {
         proportion_array.push(p);
         web.ave_propability = proportion_array.reduce((acc, cur) => acc + cur, 0) / proportion_array.length;
+        // console.log(proportion_array.length, proportion_array)
     }
 
     const draw_circle = () => {
@@ -289,7 +291,7 @@
             hoverInfo.value.visible = false;
         }
         
-        draw_points();
+        // draw_points();
     }
 
     // const draw_chart = () => {
@@ -336,11 +338,11 @@
         };
     }
 
-    const setFreqData = () => {
+    const setLineData = () => {
         return {
-            labels: Array(100).fill(0).map((_, index) => index),
+            labels: [],
             datasets: [{
-                label: '东段比例频率直方图',
+                label: '',
                 data: [],
                 backgroundColor: 'rgba(6, 182, 212, 0.2)',
                 borderColor: 'rgb(6, 182, 212)',
@@ -391,7 +393,7 @@
         };
     };
 
-    const setFreqOptions = () => {
+    const setLineOptions = () => {
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--p-text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
@@ -418,7 +420,8 @@
             },
             y: {
                 beginAtZero: true,
-                stepSize: Math.floor(highest_freq/10),
+                stepSize: 1,
+                max: 100,
                 ticks: {
                     color: textColorSecondary,
                     reverse: false,
@@ -434,6 +437,7 @@
     const refresh_chart = () => {
         const display_angles = [];
         const display_labels = [];
+        const ave_angles = [];
         // if (web.count > 3){
         //     for (let i = 3; i >= 1; i --){
         //         display_angles.push(proportion_array[web.count - i]);
@@ -445,17 +449,20 @@
         //         display_labels.push(index + 1);
         //     });
         // }
-        
+        let tmp_ave = 0;
         proportion_array.forEach((element, index) => {
             display_angles.push(element);
             display_labels.push(index + 1);
+            tmp_ave += element;
+            ave_angles.push(tmp_ave / (index + 1));
         });
         // display_angles.push(web.ave_propability);
         // display_labels.push('总体比例');
         chart_data.value.datasets[0].data = display_angles;
         chart_data.value.labels = display_labels;
-        freq_data.value.datasets[0].data = frequency.concat();
-        console.log(frequency);
+        line_data.value.datasets[0].data = ave_angles;
+        line_data.value.labels = display_labels;
+        // console.log(frequency);
     }
     
     //handle audio1
