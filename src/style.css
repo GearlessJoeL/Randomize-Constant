@@ -153,6 +153,8 @@ input:hover {
   right: 0;
   height: 18vh;
   width: 100%;
+  margin-bottom: 1%;
+	padding-top: 1%;
 }
 
 .detail-area {
