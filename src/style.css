@@ -244,7 +244,7 @@ input:hover {
   float: right;
 }
 
-#explain-button {
+.explain-button {
   position: relative;
   z-index: 5;
   top: 10px;

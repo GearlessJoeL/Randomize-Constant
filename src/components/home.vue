@@ -13,8 +13,13 @@
                 <p>在一个圆周上，最右点叫做东端。取两个随机点将圆周断开成两段弧，包含东端的那段弧姑且叫做东半。</p>
                 <p>请问东半的平均长度是否等于半个圆周? 可以点击模拟按键来寻找思路。</p>
             </div>
-            <div v-if="simulation_finished && !simulation_1000_finished">
+            <div v-if="simulation_finished && !brief_explain">
                 <p>看起来，东半的长度大于半个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
+                <!-- 点击解释键之后，在顶部出现：更长的一半更有可能包含东端…… -->
+            </div>
+            <div v-if="brief_explain && !simulation_1000_finished">
+                <p>在圆被断开成两段弧的时候，比较长的一段更有可能包含东端，所以东半的平均长度大于半个圆。</p>
+                <p>那么试问东半的平均长度具体是多少？可以点击模拟按键来寻找思路。</p>
                 <!-- 点击解释键之后，在顶部出现：更长的一半更有可能包含东端…… -->
             </div>
             <div v-if="simulation_1000_finished">
@@ -24,8 +29,11 @@
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
         
         <div class="content-area">
-            <div id="explain-button">
+            <div class="explain-button">
                 <button v-if="simulation_1000_finished" @click="go_explain()">解释</button>
+            </div>
+            <div class="explain-button">
+                <button v-if="simulation_finished && !brief_explain" @click="brief_explain = true">解释</button>
             </div>
             <div class="detail-area">
                 <div class="chart-container">
@@ -124,6 +132,7 @@
     const hasInteracted = ref(false);
     const show_chart = ref(true);
     const audio1_finished = ref(false);
+    const brief_explain = ref(false);
     const audio1 = new Audio('home_title.mp3');
     const audio2 = new Audio('question_title.mp3');
 
