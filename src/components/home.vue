@@ -15,15 +15,15 @@
             </div>
             <div v-if="simulation_finished && !brief_explain">
                 <p>看起来，东半的长度大于半个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
-                <!-- 点击解释键之后，在顶部出现：更长的一半更有可能包含东端…… -->
             </div>
             <div v-if="brief_explain && !simulation_1000_finished">
                 <p>在圆被断开成两段弧的时候，比较长的一段更有可能包含东端，所以东半的平均长度大于半个圆。</p>
                 <p>那么试问东半的平均长度具体是多少？可以点击模拟按键来寻找思路。</p>
-                <!-- 点击解释键之后，在顶部出现：更长的一半更有可能包含东端…… -->
+                <audio autoplay ref="question1" src="question1.wav"></audio>
             </div>
             <div v-if="simulation_1000_finished">
                 <p>看起来，东半的长度很接近2/3个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
+                <audio autoplay ref="question2" src="question2.wav"></audio>
             </div>
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
@@ -35,39 +35,40 @@
             <div class="explain-button">
                 <button v-if="simulation_finished && !brief_explain" @click="brief_explain = true">解释</button>
             </div>
-            <div class="detail-area">
-                <div class="chart-container">
-                    <Chart v-if="!simulation_1000_finished" type="bar" :data="chart_data" :options="chart_options" />
-                    <Chart v-if="simulation_1000_finished" type="line" :data="line_data" :options="line_chart_options" />
-                    <!-- 修改为点阵图 点的颜色和线的颜色不一样 -->
-                    <!-- <p>Point A: {{ web.points[0] }} </p>
-                    <p>Point B: {{ web.points[1] }} </p> -->
-                </div>
-                <div class="info-container">
-                    <div class="canvas-container" v-show="false">
-                        <canvas ref="background_canvas" id="background-canvas"></canvas>
-                        <canvas ref="points_canvas" id="points-canvas" @mousemove="handle_mouse_move"></canvas>
-                        <div v-if="hoverInfo.visible" :style="hoverInfo.style" class="info-box">
-                            {{ hoverInfo.text }}
-                        </div>
-                    </div>
-                    <!-- <div class="empty-space" v-if="!simulation_finished"></div> -->
-                    
-                    <div class="text-info">
-                        <!-- <p>东段长度 = {{ web.arc_length.toFixed(2) }}</p> -->
-                        <!-- <p>东半长度 = {{ web.proportion.toFixed(2) }} %个周长</p> -->
-                        <p v-show="simulation_finished">东半 {{ web.count }} 次平均 = {{ (web.ave_propability / 100.0).toFixed(2) }}</p>
-                        <!-- <p>模拟次数: {{ web.count }}</p> -->
-                        <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
-                        <br>
-                        <div id="simulate-button">
-                            <button @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 990) : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
-                        </div>
-                        <!-- 朗读完再出现按钮，先出现解释键，再模拟1000次 -->
-                    </div>
-                </div>
-                
+            <!-- <div class="detail-area"> -->
+            <div class="chart-container">
+                <Chart v-if="!simulation_1000_finished" type="bar" :data="chart_data" :options="chart_options" />
+                <Chart v-if="simulation_1000_finished" type="line" :data="line_data" :options="line_chart_options" />
+                <!-- 修改为点阵图 点的颜色和线的颜色不一样 -->
+                <!-- <p>Point A: {{ web.points[0] }} </p>
+                <p>Point B: {{ web.points[1] }} </p> -->
             </div>
+            <div class="info-container">
+                <!-- <div class="canvas-container" v-show="false">
+                    <canvas ref="background_canvas" id="background-canvas"></canvas>
+                    <canvas ref="points_canvas" id="points-canvas" @mousemove="handle_mouse_move"></canvas>
+                    <div v-if="hoverInfo.visible" :style="hoverInfo.style" class="info-box">
+                        {{ hoverInfo.text }}
+                    </div>
+                </div> -->
+                <!-- <div class="empty-space" v-if="!simulation_finished"></div> -->
+                
+                <div class="text-info">
+                    <!-- <p>东段长度 = {{ web.arc_length.toFixed(2) }}</p> -->
+                    <!-- <p>东半长度 = {{ web.proportion.toFixed(2) }} %个周长</p> -->
+                    <p v-show="simulation_finished">东半 {{ web.count }} 次平均 = {{ (web.ave_propability / 100.0).toFixed(2) }}</p>
+                    <p v-show="!simulation_finished" style="white-space: normal;"><br></p>
+                    <!-- <p>模拟次数: {{ web.count }}</p> -->
+                    <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
+                    <br>
+                    <div id="simulate-button">
+                        <button @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 990) : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
+                    </div>
+                    <!-- 朗读完再出现按钮，先出现解释键，再模拟1000次 -->
+                </div>
+            </div>
+                
+            <!-- </div> -->
             
             <footer class="bottom">
                 <img class="qr-code" src="../assets/qrcode.png" alt="QR Code">
@@ -134,7 +135,7 @@
     const audio1_finished = ref(false);
     const brief_explain = ref(false);
     const audio1 = new Audio('home_title.mp3');
-    const audio2 = new Audio('question_title.mp3');
+    const audio2 = new Audio('half_circle.wav');
 
     const diviation_x = 400;
     const diviation_y = 400;
@@ -152,10 +153,10 @@
     onMounted(() => {
         const width = 800;
         const height = 800;
-        points_canvas.value.width = width * dpr;
-        points_canvas.value.height = height * dpr;
-        background_canvas.value.width = width * dpr;
-        background_canvas.value.height = height * dpr;
+        // points_canvas.value.width = width * dpr;
+        // points_canvas.value.height = height * dpr;
+        // background_canvas.value.width = width * dpr;
+        // background_canvas.value.height = height * dpr;
         // draw_circle();
         // draw_east_point();
         chart_data.value = setBarChartData();
@@ -193,8 +194,8 @@
         //await sleep(1000);
         simulation_finished.value = true;
         //await sleep(1000);
-        if (time === 10) start_play_second();
-        else simulation_1000_finished.value = true;
+        if (time === 10) setTimeout(() => start_play_second(), 2500);
+        else setTimeout(() => simulation_1000_finished.value = true, 2500);
     }
 
     const generate_points = () => {

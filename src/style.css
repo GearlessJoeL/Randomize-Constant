@@ -151,11 +151,10 @@ input:hover {
   top: 0;
   left: 0;
   right: 0;
-  height: 18vh;
+  height: 20vh;
   min-height: 150px;
   width: 100%;
-  margin-bottom: 1%;
-	padding-top: 1%;
+  padding-top: 1%;
 }
 
 .detail-area {
@@ -172,15 +171,18 @@ input:hover {
 .info-container {
   display: block;
   width: 800px;
-  height: 70vh;
+  min-height: 10vh;
+  height: 50px;
   margin-top: 0;
+  top: 0;
   justify-content: center;
 }
 
 .chart-container {
   display: block;
-  width: 30vw;
-  height: 70vh;
+  width: 40vw;
+  height: 300px;
+  min-height: 50vh;
   justify-content: center;
   margin-top: 20px;
 }
@@ -221,11 +223,12 @@ input:hover {
   position: relative;
   display: flex;
   flex-direction: row-reverse;
-  height: 10vh;
+  min-height: 10vh;
   max-height: 100px;
   /* top: 20px; */
   /* text-align: center;
   justify-content: center; */
+  top: 50px;
   background-color: lightskyblue;
   width: 100%;
   float: right;
@@ -264,6 +267,7 @@ input:hover {
   background-color:rgb(240, 250, 255);
   justify-content: center;
   align-items: center;
+  margin: auto;
 }
 
 .explain-content-area {
