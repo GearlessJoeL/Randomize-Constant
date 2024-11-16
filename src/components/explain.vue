@@ -6,9 +6,9 @@
         <!-- <audio @play="explain1_finished" ref="audio2"></audio> -->
         <div class="title">
             <h1>固定量的随机化</h1><br>
-            <div v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。</div>
-            <div v-else>将 A, B, C 一齐旋转, 直至 A 点到达东端，在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 AC 弧。所以答案是 2/3.</div>
-            <!-- 一行话读完之后，再显示另一行 把点改成短线 要筛选掉太接近的点-->
+            <div v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。将 A, B, C 一齐旋转, 直至 A 点到达东端。</div>
+            <div v-else>在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 AC 弧。所以答案是 2/3.</div>
+            <!-- 在a点旋转到东端之后再播放第二段语音，第二段语音从B、C旋转之后开始。-->
             <!--手机适配？-->
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
@@ -30,7 +30,7 @@
                 <p>Point C: {{ web.points[2] }} </p> -->
                 <!-- <p>东半弧长: {{ web.arc_length.toFixed(2) }}</p> -->
                 <!-- <p>东半长度: {{ web.proportion.toFixed(2) }}%</p><br> -->
-                <button @click="simulate">模拟</button>
+                <!-- <button @click="simulate">模拟</button> -->
                 <!-- <button @click="animate()">解释统计</button> -->
                 <br>
             </div>
@@ -80,7 +80,7 @@
     const display_radius = 200;
     const actual_x = [];
     const actual_y = [];
-    const velocity = 0.0012;
+    const velocity = 0.0030;
     const normal_size = 12;
     const large_size = 16;
     const is_hovered = Array(3).fill(false);
@@ -119,7 +119,7 @@
         // const angle2 = (Math.random() + 1) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
         // const angle3 = (Math.random() + 2) * 2 / 5 * Math.PI + Math.PI * 2 / 3;
         const angle1 = Math.PI / 4;
-        const angle2 = Math.PI * 11 / 12;
+        const angle2 = Math.PI * 13 / 12;
         const angle3 = Math.PI * 19 / 12;
 
         web.angles = [angle1, angle2, angle3];
@@ -173,6 +173,7 @@
     }
 
     const draw_points = (color = '#FFFFFF') => {
+        // 要把圆圈变成圆点，在圆点的周围描绘字母
         const ctx = points_canvas.value.getContext('2d');
         ctx.clearRect(0, 0, 800, 800);
         //draw_east_point();
@@ -180,7 +181,7 @@
             const r = is_hovered[i] ? large_size : normal_size;
             ctx.beginPath();
             ctx.arc(actual_x[i] * dpr, actual_y[i] * dpr, r * dpr, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#00CFFF';
+            ctx.strokeStyle = '#000000';
             ctx.lineWidth = 4;
             ctx.stroke();
             if (i === 1 && web.angles[1] === 0) ctx.fillStyle = '#B3EFFF';

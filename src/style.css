@@ -129,8 +129,8 @@ input:hover {
 }
 
 .view-area {
-  margin: 0;
-  padding: 0;
+  margin: auto;
+  padding: auto;
   top: 0;
   background-color:rgb(240, 250, 255);
   width: 100%;
@@ -152,7 +152,10 @@ input:hover {
   left: 0;
   right: 0;
   height: 18vh;
+  min-height: 150px;
   width: 100%;
+  margin-bottom: 1%;
+	padding-top: 1%;
 }
 
 .detail-area {
@@ -241,7 +244,7 @@ input:hover {
   float: right;
 }
 
-#explain-button {
+.explain-button {
   position: relative;
   z-index: 5;
   top: 10px;
