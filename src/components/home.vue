@@ -13,7 +13,7 @@
                 <p>在一个圆周上，最右点叫做东端。取两个随机点将圆周断开成两段弧，包含东端的那段弧姑且叫做东半。</p>
                 <p>请问东半的平均长度是否等于半个圆周? 可以点击模拟按键来寻找思路。</p>
             </div>
-            <div v-if="simulation_finished && !brief_explain">
+            <div v-if="simulation_finished && !brief_explain && !simulation_1000_finished">
                 <p>看起来，东半的长度大于半个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
             </div>
             <div v-if="brief_explain && !simulation_1000_finished">
@@ -30,15 +30,15 @@
         
         <div class="content-area">
             <div class="explain-button">
-                <button v-if="simulation_1000_finished" @click="go_explain()">解释</button>
+                <button v-if="simulation_finished && !brief_explain && !simulation_1000_finished" @click="brief_explain = true">解释</button>
             </div>
             <div class="explain-button">
-                <button v-if="simulation_finished && !brief_explain" @click="brief_explain = true">解释</button>
+                <button v-if="simulation_1000_finished" @click="go_explain()">解释</button>
             </div>
             <!-- <div class="detail-area"> -->
             <div class="chart-container">
                 <Chart v-if="!simulation_1000_finished" type="bar" :data="chart_data" :options="chart_options" />
-                <Chart v-if="simulation_1000_finished" type="line" :data="line_data" :options="line_chart_options" />
+                <Chart v-if="simulation_1000_finished" type="scatter" :data="line_data" :options="line_chart_options" />
                 <!-- 修改为点阵图 点的颜色和线的颜色不一样 -->
                 <!-- <p>Point A: {{ web.points[0] }} </p>
                 <p>Point B: {{ web.points[1] }} </p> -->
@@ -62,7 +62,7 @@
                     <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                     <br>
                     <div id="simulate-button">
-                        <button @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 990) : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
+                        <button v-show="(!simulation_finished || brief_explain) && !simulation_1000_finished" @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 990) : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
                     </div>
                     <!-- 朗读完再出现按钮，先出现解释键，再模拟1000次 -->
                 </div>
@@ -352,11 +352,21 @@
         return {
             labels: [],
             datasets: [{
-                label: '',
+                label: 'Scatter Points',
                 data: [],
                 backgroundColor: 'rgba(6, 182, 212, 0.2)',
                 borderColor: 'rgb(6, 182, 212)',
+                pointRadius: 3
+            },
+            {
+                label: 'Connecting Lines',
+                data: [],
+                type: 'line',
+                showLine: true,
+                borderColor: 'rgba(6, 182, 212, 0.2)',
                 borderWidth: 1,
+                fill: false,
+                pointRadius: 0
             }],
         };
     }
@@ -414,32 +424,28 @@
         );
 
         return {
-            plugins: {
-            legend: {
-                display: false 
-            },
-            },
             scales: {
-            x: {
-                ticks: {
-                    color: textColorSecondary,
+                x: {
+                    type: 'linear',
+                    position: 'bottom'
                 },
-                grid: {
-                    color: surfaceBorder,
-                },
-            },
-            y: {
-                beginAtZero: true,
-                stepSize: 1,
-                max: 100,
-                ticks: {
-                    color: textColorSecondary,
-                    reverse: false,
-                },
-                grid: {
-                    color: surfaceBorder,
+                y: {
+                    beginAtZero: true,
+                    stepSize: 1,
+                    max: 100,
+                    ticks: {
+                        color: textColorSecondary,
+                        reverse: false,
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                    },
                 },
             },
+            plugins: {
+                legend: {
+                    display: false 
+                },
             },
         };
     }
@@ -447,7 +453,8 @@
     const refresh_chart = () => {
         const display_angles = [];
         const display_labels = [];
-        const ave_angles = [];
+        const scatter_points = [];
+        const lines = [];
         // if (web.count > 3){
         //     for (let i = 3; i >= 1; i --){
         //         display_angles.push(proportion_array[web.count - i]);
@@ -459,19 +466,23 @@
         //         display_labels.push(index + 1);
         //     });
         // }
-        let tmp_ave = 0;
+        // let tmp_ave = 0;
         proportion_array.forEach((element, index) => {
             display_angles.push(element);
             display_labels.push(index + 1);
-            tmp_ave += element;
-            ave_angles.push(tmp_ave / (index + 1));
+            // tmp_ave += element;
+            const tmp = {x: index + 1, y: element};
+            const tmp0 = {x: index + 1, y: 0};
+            scatter_points.push(tmp);
+            lines.push(tmp0);
+            lines.push(tmp);
         });
         // display_angles.push(web.ave_propability);
         // display_labels.push('总体比例');
         chart_data.value.datasets[0].data = display_angles;
         chart_data.value.labels = display_labels;
-        line_data.value.datasets[0].data = ave_angles;
-        line_data.value.labels = display_labels;
+        line_data.value.datasets[0].data = scatter_points;
+        line_data.value.datasets[1].data = lines;
         // console.log(frequency);
     }
     
