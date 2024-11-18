@@ -10,15 +10,17 @@
         <div class="title">
             <h1>真假对称性</h1><br>
             <div v-if="!simulation_finished">
-                <p>在一个圆周上，最右点叫做东端。取两个随机点将圆周断开成两段弧，包含东端的那段弧姑且叫做东半。</p>
-                <p>请问东半的平均长度是否等于半个圆周? 可以点击模拟按键来寻找思路。</p>
+                <p>在屏幕旁边的圆盘上，最右点叫做东端。取两个随机点将圆周断开成两段弧，包含东端的那段弧姑且叫做东半。</p>
+                <p>请问东半的平均长度是否等于半个圆周? 请拨动转盘上的指针两次, 待指针停止转动时, 会获得一个随机点, 两个随机点会产生一个东半的案例.</p>
+                    
+                <!-- next scene: 转动的每一个样例都添加到chart里面 补全至10个案例 可以点击模拟10次按键来寻找思路, -->
             </div>
             <div v-if="simulation_finished && !brief_explain && !simulation_1000_finished">
-                <p>看起来，东半的长度大于半个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
+                <p>看起来，东半的平均长度大于半个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
             </div>
             <div v-if="brief_explain && !simulation_1000_finished">
                 <p>在圆被断开成两段弧的时候，比较长的一段更有可能包含东端，所以东半的平均长度大于半个圆。</p>
-                <p>那么试问东半的平均长度具体是多少？可以点击模拟按键来寻找思路。</p>
+                <p>那么试问东半的平均长度具体是多少？可以点击模拟1000次按键来寻找思路。</p>
                 <audio autoplay ref="question1" src="question1.wav"></audio>
             </div>
             <div v-if="simulation_1000_finished">
@@ -62,9 +64,9 @@
                     <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                     <br>
                     <div id="simulate-button">
-                        <button v-show="(!simulation_finished || brief_explain) && !simulation_1000_finished" @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 990) : 10)">模拟{{simulation_finished ? 1000 : 10}}次</button>
+                        <button v-show="(!simulation_finished || brief_explain) && !simulation_1000_finished" @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 980) : 20)">模拟{{simulation_finished ? 1000 : 20}}次</button>
                     </div>
-                    <!-- 朗读完再出现按钮，先出现解释键，再模拟1000次 -->
+                    <!-- 朗读完之后, 按键才可以点击 -->
                 </div>
             </div>
                 
@@ -194,7 +196,7 @@
         //await sleep(1000);
         simulation_finished.value = true;
         //await sleep(1000);
-        if (time === 10) setTimeout(() => start_play_second(), 2500);
+        if (time === 20) setTimeout(() => start_play_second(), 2500);
         else setTimeout(() => simulation_1000_finished.value = true, 2500);
     }
 
@@ -356,7 +358,7 @@
                 data: [],
                 backgroundColor: 'rgba(6, 182, 212, 0.2)',
                 borderColor: 'rgb(6, 182, 212)',
-                pointRadius: 3
+                pointRadius: 1
             },
             {
                 label: 'Connecting Lines',

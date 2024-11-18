@@ -336,10 +336,12 @@
     };
 
     const audio1_ended = () => {
-        explain1_finished.value = true;
-        console.log("audio1 ended", explain1_finished.value);
-        audio2.play();
         animate();
+        setTimeout(() => {
+            explain1_finished.value = true;
+            console.log("audio1 ended", explain1_finished.value);
+            audio2.play();
+        }, 7000);
     }
 
     const highlight_points = async () => {
