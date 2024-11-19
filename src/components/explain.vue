@@ -2,7 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div class="view-area">
-        <audio autoplay @ended="audio1_ended" ref="audio1" src="/explain1.wav"></audio>
+        <audio autoplay @timeupdate="audio1_ended" ref="audio1" src="/explain1.wav"></audio>
         <!-- <audio @play="explain1_finished" ref="audio2"></audio> -->
         <div class="title">
             <h1>固定量的随机化</h1><br>
@@ -79,9 +79,9 @@
     const display_radius = 200;
     const actual_x = [];
     const actual_y = [];
-    const velocity = 0.0030;
-    const normal_size = 12;
-    const large_size = 16;
+    const velocity = 0.002;
+    const normal_size = 2;
+    const large_size = 5;
     const is_hovered = Array(3).fill(false);
     const dpr = window.devicePixelRatio || 1;
     const colors = ['rgb(255, 34, 34)', 'rgb(34, 255, 34)', 'rgb(34, 34, 255)'];
@@ -110,7 +110,6 @@
     
     const sleep = (delay) => new Promise((resolve) => {
         setTimeout(resolve, delay);
-        console.log("sleep: ", delay);
     });
 
     const generate_points = () => {
@@ -171,7 +170,7 @@
         ctx.stroke();
     }
 
-    const draw_points = (color = '#FFFFFF') => {
+    const draw_points = (color = '#FFFFFF', split = false) => {
         // 要把圆圈变成圆点，在圆点的周围描绘字母
         const ctx = points_canvas.value.getContext('2d');
         ctx.clearRect(0, 0, 800, 800);
@@ -179,9 +178,16 @@
         for (let i = 0; i < 3; i ++){
             const r = is_hovered[i] ? large_size : normal_size;
             ctx.beginPath();
-            ctx.arc(actual_x[i] * dpr, actual_y[i] * dpr, r * dpr, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 4;
+            if (split && i > 0){
+                ctx.moveTo((web.points[i][0] * display_radius * 0.99 + diviation_x) * dpr, (-web.points[i][1] * display_radius * 0.99 + diviation_y) * dpr);
+                ctx.lineTo((web.points[i][0] * display_radius * 1.1 + diviation_x) * dpr, (-web.points[i][1] * display_radius * 1.1 + diviation_y) * dpr);
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 10;
+            } else {
+                ctx.arc(actual_x[i] * dpr, actual_y[i] * dpr, r * dpr, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 6;
+            }
             ctx.stroke();
             if (i === 1 && web.angles[1] === 0) ctx.fillStyle = '#B3EFFF';
             else if (is_hovered[i]) ctx.fillStyle = color;
@@ -194,7 +200,7 @@
             ctx.textBaseline = 'top';
             // const textMetrics = ctx.measureText(text);
             // const textHeight = parseInt(ctx.font, 10);
-            ctx.fillText(i === 1 ? 'A' : (i === 2 ? 'B' : 'C'), actual_x[i] * dpr, actual_y[i] - 9);
+            ctx.fillText(i === 1 ? 'A' : (i === 2 ? 'B' : 'C'), (web.points[i][0] * display_radius * 1.075+ diviation_x) * dpr, (-web.points[i][1] * display_radius * 1.075 + diviation_y) * dpr - 10);
         }
     }
 
@@ -336,12 +342,16 @@
     };
 
     const audio1_ended = () => {
-        animate();
-        setTimeout(() => {
-            explain1_finished.value = true;
-            console.log("audio1 ended", explain1_finished.value);
-            audio2.play();
-        }, 7000);
+        console.log(audio1.value.currentTime);
+        if (audio1.value.currentTime >= 16){
+            animate();
+            setTimeout(() => {
+                explain1_finished.value = true;
+                audio2.play();
+                draw_points("#FFFFFF", true);
+            }, 4000);
+        }
+        
     }
 
     const highlight_points = async () => {
@@ -363,7 +373,7 @@
     }
 
     const highlight_arcs = async () => {
-        await sleep(7000);
+        await sleep(6500);
         draw_arcs(1);
         await sleep(1000);
         draw_arcs(2);
