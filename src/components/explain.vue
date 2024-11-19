@@ -73,13 +73,14 @@
     const explain2_finished = ref(false);
     const audio1 = ref(null);
     const audio2 = new Audio('explain2.wav');
+    const split = ref(false);
 
     const diviation_x = 400;
     const diviation_y = 400;
     const display_radius = 200;
     const actual_x = [];
     const actual_y = [];
-    const velocity = 0.002;
+    const velocity = 0.0015;
     const normal_size = 2;
     const large_size = 5;
     const is_hovered = Array(3).fill(false);
@@ -170,7 +171,7 @@
         ctx.stroke();
     }
 
-    const draw_points = (color = '#FFFFFF', split = false) => {
+    const draw_points = (color = '#FFFFFF') => {
         // 要把圆圈变成圆点，在圆点的周围描绘字母
         const ctx = points_canvas.value.getContext('2d');
         ctx.clearRect(0, 0, 800, 800);
@@ -178,11 +179,11 @@
         for (let i = 0; i < 3; i ++){
             const r = is_hovered[i] ? large_size : normal_size;
             ctx.beginPath();
-            if (split && i > 0){
-                ctx.moveTo((web.points[i][0] * display_radius * 0.99 + diviation_x) * dpr, (-web.points[i][1] * display_radius * 0.99 + diviation_y) * dpr);
-                ctx.lineTo((web.points[i][0] * display_radius * 1.1 + diviation_x) * dpr, (-web.points[i][1] * display_radius * 1.1 + diviation_y) * dpr);
+            if (split.value && i != 1){
+                ctx.moveTo((web.points[i][0] * display_radius * 0.96 + diviation_x) * dpr, (-web.points[i][1] * display_radius * 0.96 + diviation_y) * dpr);
+                ctx.lineTo((web.points[i][0] * display_radius * 1.04 + diviation_x) * dpr, (-web.points[i][1] * display_radius * 1.04 + diviation_y) * dpr);
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 10;
+                ctx.lineWidth = 5;
             } else {
                 ctx.arc(actual_x[i] * dpr, actual_y[i] * dpr, r * dpr, 0, 2 * Math.PI);
                 ctx.strokeStyle = '#000000';
@@ -348,8 +349,9 @@
             setTimeout(() => {
                 explain1_finished.value = true;
                 audio2.play();
-                draw_points("#FFFFFF", true);
+                
             }, 4000);
+            setTimeout(() => split.value = true, 5000);
         }
         
     }
