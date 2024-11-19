@@ -32,16 +32,15 @@
         
         <div class="content-area">
             <div class="explain-button">
-                <button v-if="simulation_finished && !brief_explain && !simulation_1000_finished" @click="brief_explain = true">解释</button>
+                <button v-if="simulation_finished && !brief_explain && !simulation_1000_finished" @click="brief_explain = true; handle_pause();">解释</button>
             </div>
             <div class="explain-button">
-                <button v-if="simulation_1000_finished" @click="go_explain()">解释</button>
+                <button v-if="simulation_1000_finished" @click="go_explain(); handle_pause();">解释</button>
             </div>
             <!-- <div class="detail-area"> -->
             <div class="chart-container">
                 <Chart v-if="!simulation_1000_finished" type="bar" :data="chart_data" :options="chart_options" />
                 <Chart v-if="simulation_1000_finished" type="scatter" :data="line_data" :options="line_chart_options" />
-                <!-- 修改为点阵图 点的颜色和线的颜色不一样 -->
                 <!-- <p>Point A: {{ web.points[0] }} </p>
                 <p>Point B: {{ web.points[1] }} </p> -->
             </div>
@@ -64,7 +63,7 @@
                     <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                     <br>
                     <div id="simulate-button">
-                        <button v-show="(!simulation_finished || brief_explain) && !simulation_1000_finished" @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 980) : 20)">模拟{{simulation_finished ? 1000 : 20}}次</button>
+                        <button v-show="(!simulation_finished || brief_explain) && !simulation_1000_finished" @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 980) : 20); handle_pause()">模拟{{simulation_finished ? 1000 : 20}}次</button>
                     </div>
                     <!-- 朗读完之后, 按键才可以点击 -->
                 </div>
@@ -138,6 +137,8 @@
     const brief_explain = ref(false);
     const audio1 = new Audio('home_title.mp3');
     const audio2 = new Audio('half_circle.wav');
+    const question1 = ref();
+    const question2 = ref();
 
     const diviation_x = 400;
     const diviation_y = 400;
@@ -500,7 +501,7 @@
             audio1.play().then(() => {
                 hasInteracted.value = true;
                 sessionStorage.setItem('homeAudioPlayed', 'true');
-                console.log('played');
+                console.log('audio1 played');
             }).catch(error => {
                 console.error("Playback failed:", error);
             });
@@ -524,6 +525,22 @@
             console.error("Playback failed:", error);
         });
         
+    }
+
+    const handle_pause = () => {
+        if (audio1.currentTime > 0 && audio1.currentTime < audio1.duration && !audio1.paused){
+            console.log("pause 1", audio1.currentTime, audio1.duration, audio1.paused);
+            audio1.pause();
+        } else if (audio2.currentTime > 0 && audio2.currentTime < audio2.duration && !audio2.paused){
+            console.log("pause 2");
+            audio2.pause();
+        } else if (question1.value.currentTime > 0 && question1.value.currentTime < question1.value.duration && !question1.value.paused){
+            console.log("pause 3");
+            question1.value.pause();
+        } else if (question2.value.currentTime > 0 && question2.value.currentTime < question2.value.duration && !question2.value.paused){
+            console.log("pause 4");
+            question2.value.pause();
+        }
     }
 </script>
 
