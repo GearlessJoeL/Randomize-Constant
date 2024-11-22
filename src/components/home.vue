@@ -201,9 +201,13 @@
         else setTimeout(() => simulation_1000_finished.value = true, 2500);
     }
 
-    const generate_points = () => {
-        const angle1 = Math.random() * 2 * Math.PI;
-        const angle2 = Math.random() * 2 * Math.PI;
+    const generate_points = (sim_angles = []) => {
+        if (sim_angles.length == 0){
+            const angle1 = Math.random() * 2 * Math.PI;
+            const angle2 = Math.random() * 2 * Math.PI;
+        } else {
+            //TODO: get the points data from backend and replace the angles with actual data
+        }
         //smaller angle
         web.angles[0] = Math.min(angle1, angle2);
         web.points[0] = [Math.cos(web.angles[0]), Math.sin(web.angles[0])];

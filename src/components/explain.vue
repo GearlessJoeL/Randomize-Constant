@@ -8,7 +8,6 @@
             <h1>固定量的随机化</h1><br>
             <div v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。将 A, B, C 一齐旋转, 直至 A 点到达东端。</div>
             <div v-else>在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 AC 弧。所以答案是 2/3.</div>
-            <!-- 在a点旋转到东端之后再播放第二段语音，第二段语音从B、C旋转之后开始。-->
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
         <div class="explain-content-area">
@@ -357,7 +356,6 @@
     }
 
     const highlight_points = async () => {
-        // TODO:
         await sleep(2000);
         is_hovered[1] = true;
         draw_points('#D6DBDF');
