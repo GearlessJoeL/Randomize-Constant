@@ -6,8 +6,9 @@
         <!-- <audio @play="explain1_finished" ref="audio2"></audio> -->
         <div class="title">
             <h1>固定量的随机化</h1><br>
-            <div v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。将 A, B, C 一齐旋转, 直至 A 点到达东端。</div>
-            <div v-else>在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 AC 弧。所以答案是 2/3.</div>
+            <div style="font-size: xx-large;" v-if="!explain1_finished">在圆上取三个随机点 A, B, C。它们将圆切成三段弧，取名为AB弧，BC弧，和AC弧。</div>
+            <div style="font-size: xx-large;" v-if="!explain1_finished">基于随机对称性，每一段弧的平均长度都是 1/3 个圆周。将 A, B, C 一齐旋转, 直至 A 点到达东端。</div>
+            <div style="font-size: xx-large;" v-else>在 B 和 C 旋转之后的位置将圆断开。结果的东半就是旋转之后的 AB 弧加上 AC 弧。所以答案是 2/3.</div>
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
         <div class="explain-content-area">
@@ -79,7 +80,7 @@
     const display_radius = 200;
     const actual_x = [];
     const actual_y = [];
-    const velocity = 0.0015;
+    const velocity = 0.001;
     const normal_size = 2;
     const large_size = 5;
     const is_hovered = Array(3).fill(false);

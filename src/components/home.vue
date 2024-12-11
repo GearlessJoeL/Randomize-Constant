@@ -202,10 +202,10 @@
     }
 
     const generate_points = (sim_angles = []) => {
-        if (sim_angles.length == 0){
-            const angle1 = Math.random() * 2 * Math.PI;
-            const angle2 = Math.random() * 2 * Math.PI;
-        } else {
+        
+        const angle1 = Math.random() * 2 * Math.PI;
+        const angle2 = Math.random() * 2 * Math.PI;
+        if (sim_angles.length !== 0){
             //TODO: get the points data from backend and replace the angles with actual data
         }
         //smaller angle
