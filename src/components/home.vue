@@ -21,7 +21,7 @@
             <div v-if="brief_explain && !simulation_1000_finished">
                 <p>在圆被断开成两段弧的时候，比较长的一段更有可能包含东端，所以东半的平均长度大于半个圆。</p>
                 <p>那么试问东半的平均长度具体是多少？可以点击模拟1000次按键来寻找思路。</p>
-                <audio autoplay ref="question1" src="question1.wav"></audio>
+                <audio autoplay ref="question1" src="question1.wav" @playing="click_forbidden = true" @ended="click_forbidden = false"></audio>
             </div>
             <div v-if="simulation_1000_finished">
                 <p>看起来，东半的长度很接近2/3个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
@@ -63,7 +63,7 @@
                     <!-- <span>输入模拟次数: </span><input v-model.number="web.sim_times"/> -->
                     <br>
                     <div id="simulate-button">
-                        <button v-show="(!simulation_finished || brief_explain) && !simulation_1000_finished" @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 980) : 20); handle_pause()">模拟{{simulation_finished ? 1000 : 20}}次</button>
+                        <button v-show="(!simulation_finished || brief_explain) && !simulation_1000_finished" @click="fast_simulate(simulation_finished ? (simulation_1000_finished ? 1000 : 980) : 20); handle_pause()" :disabled="click_forbidden">模拟{{simulation_finished ? 1000 : 20}}次</button>
                     </div>
                     <!-- 朗读完之后, 按键才可以点击 -->
                 </div>
@@ -139,6 +139,7 @@
     const audio2 = new Audio('half_circle.wav');
     const question1 = ref();
     const question2 = ref();
+    const click_forbidden = ref(true);
 
     const diviation_x = 400;
     const diviation_y = 400;
@@ -162,6 +163,7 @@
         // background_canvas.value.height = height * dpr;
         // draw_circle();
         // draw_east_point();
+        audio_listener();
         chart_data.value = setBarChartData();
         chart_options.value = setChartOptions();
         line_data.value = setLineData();
@@ -545,6 +547,21 @@
             console.log("pause 4");
             question2.value.pause();
         }
+    }
+
+    const audio_listener = () => {
+        audio1.addEventListener('pause', () => {
+            click_forbidden.value = false;
+        });
+
+        audio1.addEventListener('ended', () => {
+            click_forbidden.value = false;
+        });
+
+        audio1.addEventListener('playing', () => {
+            click_forbidden.value = true;
+            console.log("playing 1");
+        });
     }
 </script>
 
