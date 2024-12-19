@@ -25,17 +25,17 @@
             </div>
             <div v-if="simulation_1000_finished">
                 <p>看起来，东半的长度很接近2/3个圆，请思考这其中的原由，然后点击解释按键得到简单答案。</p>
-                <audio autoplay ref="question2" src="question2.wav"></audio>
+                <audio autoplay ref="question2" src="question2.wav" @playing="click_forbidden = true" @ended="click_forbidden = false"></audio>
             </div>
         </div>
         <button id="mute-button" @click="toggleMute()">{{ isMuted ? 'Unmute' : 'Mute' }}</button>
         
         <div class="content-area">
             <div class="explain-button">
-                <button v-if="simulation_finished && !brief_explain && !simulation_1000_finished" @click="brief_explain = true; handle_pause();">解释</button>
+                <button v-if="simulation_finished && !brief_explain && !simulation_1000_finished" @click="brief_explain = true; handle_pause();" :disabled="click_forbidden">解释</button>
             </div>
             <div class="explain-button">
-                <button v-if="simulation_1000_finished" @click="go_explain(); handle_pause();">解释</button>
+                <button v-if="simulation_1000_finished" @click="go_explain(); handle_pause();" :disabled="click_forbidden">解释</button>
             </div>
             <!-- <div class="detail-area"> -->
             <div class="chart-container">
@@ -135,7 +135,7 @@
     const show_chart = ref(true);
     const audio1_finished = ref(false);
     const brief_explain = ref(false);
-    const audio1 = new Audio('home_title.mp3');
+    const audio1 = new Audio('home_title.wav');
     const audio2 = new Audio('half_circle.wav');
     const question1 = ref();
     const question2 = ref();
@@ -199,7 +199,7 @@
         //await sleep(1000);
         simulation_finished.value = true;
         //await sleep(1000);
-        if (time === 20) setTimeout(() => start_play_second(), 2500);
+        if (time === 20) start_play_second();
         else setTimeout(() => simulation_1000_finished.value = true, 2500);
     }
 
@@ -561,6 +561,19 @@
         audio1.addEventListener('playing', () => {
             click_forbidden.value = true;
             console.log("playing 1");
+        });
+
+        audio2.addEventListener('pause', () => {
+            click_forbidden.value = false;
+        });
+
+        audio2.addEventListener('ended', () => {
+            click_forbidden.value = false;
+        });
+
+        audio2.addEventListener('playing', () => {
+            click_forbidden.value = true;
+            console.log("playing 2");
         });
     }
 </script>
